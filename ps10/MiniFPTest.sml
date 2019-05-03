@@ -1,6 +1,6 @@
 (* Testing functions for the MINI-FP interpreter *)
 
-use "../ps10-solns/MiniFPInterp.sml";
+use "../ps10/MiniFPInterp.sml";
 use "../utils/Utils.sml";
 
 structure MiniFPTest = struct

@@ -125,6 +125,7 @@ structure SigmexEnvInterp = struct
 				     handle EvalError s => println ("Error: " ^ s)
 					  | SyntaxError s => println ("Error: " ^ s)
 					  | Fail s => println ("Error: " ^ s)
+					  | other => println ("Error: " ^ (exnName other)
 							      ^ " -- " ^ (exnMessage other))
 			in loop env
 			end

@@ -34,14 +34,16 @@ and eval (Lit v) env = v
     eval body (Env.bind name (eval defn env) env)
   | eval (If(tst,thn,els)) env =
     (case eval tst env of
-	 Bool false => eval els env
-      | _  => eval thn env
+	 Bool b => if b then eval thn env else eval els env
+       | v => raise (EvalError ("Non-boolean test value " 
+				^ (valueToString v)
+				^ " in if expression"))
 
-(*	 
-	       Bool b => if b then eval thn env else eval els env
-	| v => raise (EvalError ("Non-boolean test value " 
-				 ^ (valueToString v)
-				 ^ " in if expression"))*)
+      (* (* Alternative clauses for Racket semantics: *)
+   	 Bool false => eval els env
+      | _  => eval thn env
+      *)
+
     )
 
 (* A function for running programs expressed as strings *)

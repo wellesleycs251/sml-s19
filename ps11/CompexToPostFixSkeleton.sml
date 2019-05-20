@@ -91,6 +91,7 @@ fun testTranslator (compexFileName, listOfArgLists) =
   end
 
 (* Testing *)
+(*
 val tests =       
     List.app testTranslator
              [("../ps11-solns/pgm1.cpx", [[17],[0],[~42]]),
@@ -100,6 +101,7 @@ val tests =
 	      ("../ps11-solns/pgm5.cpx", [[4,3,2],[3,3,3],[2,3,4],[4,2,3],[4,3,3],[3,3,4],
 					 [3,4,2],[2,4,3],[3,2,4]])
 	     ]
+*)
 end
 
 				

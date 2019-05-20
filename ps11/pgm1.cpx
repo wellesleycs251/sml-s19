@@ -1,0 +1,4 @@
+; ps11/pgm1.cpx
+;
+; Return the absolute value of a*b
+(compex (a b) (comp prod (* a b) prod 0 (- 0 prod)))

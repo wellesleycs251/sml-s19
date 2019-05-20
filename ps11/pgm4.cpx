@@ -1,0 +1,12 @@
+; ps11/pgm4.cpx
+;
+; If x > y > z, returns the sum of x, y, and z.
+; If x = y = z, returns x
+; If x < y < z, returns the product of x, y, and z.
+; Otherwise gives a divide-by-zero error.
+; (tests that only one branch is evaluated)
+(compex (x y z)
+  (comp diffxy (- x y)
+        (comp diffyz (- y z) (+ y (+ (* 2 z) (+ diffxy diffyz))) (/ y 0) (/ z 0))
+        (comp diffyz2 (- y z) (/ y 0) (+ z (+ diffxy diffyz2)) (/ z 0))
+        (comp diffyz3 (- y z) (/ y 0) (/ z 0) (* (+ diffxy y) (* (+ diffyz3 z) z)))))

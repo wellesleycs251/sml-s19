@@ -1,0 +1,21 @@
+; ps11/pgm6.cpx
+;
+; A complex program that tests comp in many expression positions
+(compex (a b c d e f g h)
+  (+ (comp sumab (+ a b)
+       (comp sumcd (+ c d) (+ sumab sumcd) (+ 17 (+ sumab sumcd)) (* sumab sumcd))
+       (comp sumef (+ e f) (- sumab sumef) (+ 19 (+ sumab sumef)) (+ sumab sumef))
+       (comp sumgh (+ g h) (* sumab sumgh) (+ 23 (+ sumab sumgh)) (- sumab sumgh))
+       )
+     (comp compres (comp sumcd (+ c d)
+                     (comp sumef (+ e f) (+ sumcd sumef) (+ 42 (+ sumcd sumef)) (* sumcd sumef))
+                     (comp sumgh (+ g h) (- sumcd sumgh) (* sumcd sumgh) (+ sumcd sumgh))
+                     (comp sumab (+ a b) (* sumcd sumab) (+ 57 (+ sumcd sumab)) (- sumcd sumab))
+                     )
+       (comp sumef (+ e f) (+ compres sumef) (- compres sumef) (* compres sumef))
+       (comp sumgh (+ g h) (- compres sumgh) (+ 87 (+ compres sumgh)) (+ compres sumgh))
+       (comp sumab (+ a b) (* compres sumab) (- sumab compres) (+ compres sumab))
+       )
+     )
+  )
+  

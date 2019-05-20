@@ -1,0 +1,8 @@
+; ps11/pgm3.cpx
+;
+; Return the max of a, b, and c
+(compex (a b c)
+  (comp ignore1 (- a b)
+	(comp ignore2 (- a c) a a c)
+        (comp ignore3 (- a c) a a c)
+	(comp ignore4 (- b c) b b c)))

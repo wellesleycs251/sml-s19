@@ -1,0 +1,14 @@
+; ps11/pgm5.cpx
+;
+; Test the interaction of comp with bind and itself
+(compex (p q r)
+  (+ (bind p (- p q)
+       (comp q (- p q) 
+             (+ p q) 
+	     (- q p)
+             (bind p (- p q) (* p q))))
+     (comp r (- r q)
+       (bind r (- p r) (comp p (- p r) (* p r) (+ p r) (- p r)))
+       (bind r (- q r) (comp q (- r q) (* q r) (+ q r) (- q r)))
+       (bind r (- r p) (comp p (- r p) (* r p) (+ r p ) (- r p))))))
+

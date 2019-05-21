@@ -149,22 +149,43 @@ structure PostFix = struct
   and stkvalToString v = Sexp.sexpToString (stkvalToSexp v)
   and stkToString stk = Sexp.sexpToString (stkToSexp stk)
 
+  fun testRun pgm args =
+      Int.toString (run pgm args) (* Convert to string so same type as error messages below *)
+      handle ExecError msg => "ExecError: " ^ msg
+	   | ConfigError(msg, cmd, stk) =>
+	     "ConfigError: " ^ msg
+	     ^ " command=" ^ (cmdToString cmd)
+	     ^ " and stack=" ^ (stkToString stk)
+	   | General.Div => "Divide by zero error"
+           (* General.Div from SML General basis structure;
+            Need explicit qualification to distinguish from PostFix.Div *)
+	   | other => "Unknown exception: " ^ (exnMessage other)
+
+  exception SexpError of string * Sexp.sexp
+
+  (* testRun' takes sexpStrings instead *)		   
+  fun testRun' pgmSexpString argsSexpString =
+      testRun (stringToPgm pgmSexpString)
+	      (sexpStringToIntList argsSexpString)
+      handle SexpError (msg, sexp) => ("SexpError: " ^ msg ^ " " ^ (Sexp.sexpToString sexp))
+           | Sexp.IllFormedSexp msg => ("SexpError: Ill-formed sexp " ^ msg)
+           | SyntaxError msg => ("SyntaxError: " ^ msg)
+           | other => "Unknown exception: " ^ (exnMessage other)
+
+  and sexpStringToIntList str =
+      let val sexp = Sexp.stringToSexp str
+      in case sexp of
+	     Sexp.Seq xs => List.map sexpToInt xs
+	   | _  => raise SexpError("expected sexp sequence but got", sexp)
+      end
+
+  and sexpToInt (Sexp.Int i) = i
+    | sexpToInt sexp = raise SexpError("expected sexp int but got", sexp)
+
 end
 
 (* Test cases *)    
 open PostFix
-
-fun testRun pgm args =
-  Int.toString (run pgm args) (* Convert to string so same type as error messages below *)
-  handle ExecError msg => "ExecError: " ^ msg
-       | ConfigError(msg, cmd, stk) =>
-	 "ConfigError: " ^ msg
-	 ^ " command=" ^ (cmdToString cmd)
-	 ^ " and stack=" ^ (stkToString stk)
-       | General.Div => "Divide by zero error"
-         (* General.Div from SML General basis structure;
-            Need explicit qualification to distinguish from PostFix.Div *)
-       | other => "Unknown exception: " ^ (exnMessage other)
 
 (* test cases *)
 
@@ -202,26 +223,6 @@ val pfNgetZeroIndex = testRun (PostFix(3, [Int 0, Nget])) [7, 9, 5]
 val pfNgetTooBigIndex = testRun (PostFix(3, [Int 4, Nget])) [7, 9, 5]
 val pfNgetSeqVal = testRun (PostFix(3, [Seq[Swap,Pop], Int 1, Nget])) [7, 9, 5]
 
-exception SexpError of string * Sexp.sexp
-
-(* testRun' takes sexpStrings instead *)		   
-fun testRun' pgmSexpString argsSexpString =
-    testRun (stringToPgm pgmSexpString)
-	    (sexpStringToIntList argsSexpString)
-    handle SexpError (msg, sexp) => ("SexpError: " ^ msg ^ " " ^ (Sexp.sexpToString sexp))
-         | Sexp.IllFormedSexp msg => ("SexpError: Ill-formed sexp " ^ msg)
-         | SyntaxError msg => ("SyntaxError: " ^ msg)
-         | other => "Unknown exception: " ^ (exnMessage other)
-
-and sexpStringToIntList str =
-    let val sexp = Sexp.stringToSexp str
-    in case sexp of
-	   Sexp.Seq xs => List.map sexpToInt xs
-	 | _  => raise SexpError("expected sexp sequence but got", sexp)
-    end
-
-and sexpToInt (Sexp.Int i) = i
-  | sexpToInt sexp = raise SexpError("expected sexp int but got", sexp)
 
 
 val pf1String = "(postfix 2 2 nget 0 gt (sub) (swap 1 nget mul add) sel exec)"
